@@ -3,30 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
+    "dev": "next dev -H 0.0.0.0",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint",
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@prisma/client": "^5.10.2",
-    "canvas-confetti": "^1.9.2",
-    "jose": "^5.2.2",
-    "lucide-react": "^0.344.0",
+    "bcryptjs": "^2.4.3",
+    "canvas-confetti": "^1.9.4",
+    "date-fns": "^4.1.0",
+    "dotenv": "^16.4.5",
     "next": "14.1.0",
-    "react": "^18",
-    "react-dom": "^18",
-    "recharts": "^2.12.2"
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "recharts": "^2.12.2",
+    "uuid": "^9.0.1",
+    "@prisma/client": "^5.22.0"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
     "@types/canvas-confetti": "^1.6.4",
-    "@types/node": "^20",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
-    "eslint": "^8",
+    "@types/node": "^20.11.24",
+    "@types/react": "^18.2.61",
+    "@types/react-dom": "^18.2.19",
+    "@types/uuid": "^9.0.8",
+    "eslint": "^8.57.0",
     "eslint-config-next": "14.1.0",
-    "prisma": "^5.10.2",
-    "typescript": "^5"
+    "prisma": "^5.22.0",
+    "typescript": "^5.3.3"
   }
 }
