@@ -460,10 +460,4 @@ export const db = {
     });
     return newC as Category;
   },
-
-  async deleteWallet(id: string) {
-    return prisma.wallet.delete({
-      where: { id }
-    });
-  },
 };
