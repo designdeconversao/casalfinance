@@ -55,7 +55,7 @@ interface Goal {
   status: string; currentAmount: number; deposits: GoalDeposit[]; steps: GoalStep[];
 }
 
-interface Category { name: string; icon: string; color: string; }
+interface Category { id: string; name: string; icon: string; color: string; }
 
 const CHART_COLORS = ['#6366f1', '#ec4899', '#3b82f6', '#22c55e', '#f59e0b', '#8b5cf6', '#f97316', '#14b8a6', '#ef4444', '#06b6d4', '#a855f7', '#64748b'];
 
