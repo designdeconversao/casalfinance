@@ -156,7 +156,29 @@ export const db = {
   },
 
   seedUsers: async () => {
-    // No-op: users are already migrated
+    const count = await prisma.user.count();
+    if (count === 0) {
+      await prisma.user.createMany({
+        data: [
+          {
+            id: 'f9399cb5-38f7-4b52-b2f8-befbf44aea18',
+            name: 'Rodrigo Silva',
+            email: 'rodrigo.hsilva83@gmail.com',
+            passwordHash: '$2b$10$JO7cKHgiOwnvfWOZVcNdbOAJgo.nj8YOGIS.23diiDxGrSwwR8uA.',
+            role: 'rodrigo',
+            createdAt: new Date('2026-04-23T17:21:52.410Z'),
+          },
+          {
+            id: '57f7c61a-5ff1-4f6f-af66-6e19d8519664',
+            name: 'Mari Silva',
+            email: 'mariaz.silva@hotmail.com',
+            passwordHash: '$2b$10$7eIxRUiXxRiz/bm9B2kR8O/fLSzY8pyJ1WOFs7h/2.NqasW0VCzNO',
+            role: 'mari',
+            createdAt: new Date('2026-04-23T17:21:52.410Z'),
+          },
+        ],
+      });
+    }
   },
 
   addUser: async (user: Omit<User, 'id' | 'createdAt'>) => {
