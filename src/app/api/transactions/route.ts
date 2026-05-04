@@ -72,6 +72,7 @@ export async function POST(request: NextRequest) {
       status: body.status,
       month: body.month || new Date().toISOString().slice(0, 7),
       isRecurring: body.isRecurring || false,
+      walletId: body.walletId || undefined,
     });
 
     return NextResponse.json({ transaction }, { status: 201 });

@@ -12,6 +12,7 @@ import GoalModal, { GoalFormData } from './GoalModal';
 import DepositModal, { DepositFormData } from './DepositModal';
 import TransferModal from './TransferModal';
 import WalletManagementModal from './WalletManagementModal';
+import CategoryManagementModal from './CategoryManagementModal';
 import StepModal, { StepFormData } from './StepModal';
 import ExportModal from './ExportModal';
 import GoalCompletionModal from './GoalCompletionModal';
@@ -83,6 +84,7 @@ export default function Dashboard() {
   const [showDepositModal, setShowDepositModal] = useState(false);
   const [showTransferModal, setShowTransferModal] = useState(false);
   const [showWalletMgmtModal, setShowWalletMgmtModal] = useState(false);
+  const [showCategoryMgmtModal, setShowCategoryMgmtModal] = useState(false);
   const [showCompletionModal, setShowCompletionModal] = useState(false);
   const [completionGoalId, setCompletionGoalId] = useState<string | null>(null);
   const [showStepModal, setShowStepModal] = useState(false);
@@ -336,6 +338,51 @@ export default function Dashboard() {
     }
   };
 
+  const handleEditWallet = async (id: string, data: any) => {
+    try {
+      const res = await fetch('/api/wallets', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...data }),
+      });
+      if (res.ok) fetchWallets();
+      else alert('Erro ao editar carteira');
+    } catch { alert('Erro de conexão'); }
+  };
+
+  const handleWalletDeposit = async (id: string, amount: number, note: string) => {
+    try {
+      // Direct wallet balance increment via updateWallet
+      const res = await fetch('/api/wallets', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, balanceAdjust: amount, note }),
+      });
+      if (res.ok) fetchWallets();
+      else alert('Erro ao ajustar saldo');
+    } catch { alert('Erro de conexão'); }
+  };
+
+  const handleEditCategory = async (id: string, data: { name: string; icon: string; color: string }) => {
+    try {
+      const res = await fetch('/api/categories', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, ...data }),
+      });
+      if (res.ok) fetchCategories();
+      else alert('Erro ao editar categoria');
+    } catch { alert('Erro de conexão'); }
+  };
+
+  const handleDeleteCategory = async (id: string) => {
+    try {
+      const res = await fetch(`/api/categories?id=${id}`, { method: 'DELETE' });
+      if (res.ok) fetchCategories();
+      else alert('Erro ao excluir categoria');
+    } catch { alert('Erro de conexão'); }
+  };
+
   // --- Computed Data ---
   const entradas = transactions.filter(t => t.type === 'entrada');
   const saidas = transactions.filter(t => t.type === 'saida');
@@ -529,6 +576,9 @@ export default function Dashboard() {
               </button>
               <button className="wallet-add-btn" onClick={() => setShowWalletMgmtModal(true)} title="Gerenciar Carteiras">
                 ⚙️ Carteiras
+              </button>
+              <button className="wallet-add-btn" onClick={() => setShowCategoryMgmtModal(true)} title="Gerenciar Categorias" style={{ background: 'var(--purple-bg)', color: 'var(--purple)' }}>
+                🗂️ Categorias
               </button>
             </div>
 
@@ -1233,6 +1283,8 @@ export default function Dashboard() {
           wallets={wallets}
           onAdd={handleAddWallet}
           onDelete={handleDeleteWallet}
+          onEdit={handleEditWallet}
+          onDeposit={handleWalletDeposit}
         />
       </main>
 
@@ -1313,6 +1365,14 @@ export default function Dashboard() {
         onClose={() => setShowTransferModal(false)}
         onSave={handleSaveTransfer}
         wallets={wallets}
+      />
+      <CategoryManagementModal
+        isOpen={showCategoryMgmtModal}
+        onClose={() => setShowCategoryMgmtModal(false)}
+        categories={categories}
+        onAdd={async (data) => { await fetch('/api/categories', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) }); fetchCategories(); }}
+        onEdit={handleEditCategory}
+        onDelete={handleDeleteCategory}
       />
     </div>
   );

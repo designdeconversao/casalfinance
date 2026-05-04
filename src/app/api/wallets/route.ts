@@ -42,6 +42,23 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Erro ao criar carteira' }, { status: 500 });
   }
 }
+
+export async function PUT(request: NextRequest) {
+  const user = await authenticate(request);
+  if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { id, name, color, isJoint } = body;
+    if (!id) return NextResponse.json({ error: 'ID obrigatório' }, { status: 400 });
+
+    const wallet = await db.updateWallet(id, { name, color, isJoint });
+    return NextResponse.json({ wallet });
+  } catch (error) {
+    console.error('Error updating wallet:', error);
+    return NextResponse.json({ error: 'Erro ao atualizar carteira' }, { status: 500 });
+  }
+}
 export async function DELETE(request: NextRequest) {
   const user = await authenticate(request);
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });

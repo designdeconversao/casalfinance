@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
   const user = await authenticate(request);
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
 
-  // Auto-seed default categories on first access
+  // Auto-seed default categories (adds missing ones)
   await db.seedCategories();
 
   const categories = await db.getCategories();
@@ -32,8 +32,6 @@ export async function POST(request: NextRequest) {
     }
 
     const categories = await db.getCategories();
-
-    // Check if category already exists
     const exists = categories.find(c => c.name.toLowerCase() === name.trim().toLowerCase());
     if (exists) {
       return NextResponse.json({ error: 'Categoria já existe' }, { status: 409 });
@@ -49,5 +47,40 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Error adding category:', error);
     return NextResponse.json({ error: 'Erro ao criar categoria' }, { status: 500 });
+  }
+}
+
+export async function PUT(request: NextRequest) {
+  const user = await authenticate(request);
+  if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
+  try {
+    const body = await request.json();
+    const { id, name, icon, color } = body;
+
+    if (!id) return NextResponse.json({ error: 'ID obrigatório' }, { status: 400 });
+
+    const category = await db.updateCategory(id, { name, icon, color });
+    return NextResponse.json({ category });
+  } catch (error) {
+    console.error('Error updating category:', error);
+    return NextResponse.json({ error: 'Erro ao atualizar categoria' }, { status: 500 });
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  const user = await authenticate(request);
+  if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
+
+  const { searchParams } = new URL(request.url);
+  const id = searchParams.get('id');
+  if (!id) return NextResponse.json({ error: 'ID obrigatório' }, { status: 400 });
+
+  try {
+    await db.deleteCategory(id);
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error('Error deleting category:', error);
+    return NextResponse.json({ error: 'Erro ao excluir categoria' }, { status: 500 });
   }
 }

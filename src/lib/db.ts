@@ -123,11 +123,13 @@ export const db = {
     return { ...newW, createdAt: newW.createdAt.toISOString() } as Wallet;
   },
 
-  updateWallet: async (id: string, data: Partial<Wallet>) => {
+  updateWallet: async (id: string, data: Partial<Wallet> & { balanceAdjust?: number }) => {
+    const { balanceAdjust, ...rest } = data;
     const updated = await prisma.wallet.update({
       where: { id },
       data: {
-        ...data as any,
+        ...rest as any,
+        ...(balanceAdjust !== undefined ? { balance: { increment: balanceAdjust } } : {}),
       },
     });
     return { ...updated, createdAt: updated.createdAt.toISOString() } as Wallet;
@@ -482,10 +484,7 @@ export const db = {
   },
 
   seedCategories: async () => {
-    const count = await prisma.category.count();
-    if (count > 0) return; // Already seeded
-
-    const defaults: Omit<Category, 'id'>[] = [
+    const defaults = [
       { name: 'Moradia',        icon: '🏠', color: '#6366f1' },
       { name: 'Alimentação',    icon: '🍽️', color: '#f97316' },
       { name: 'Mercado',        icon: '🛒', color: '#22c55e' },
@@ -507,7 +506,26 @@ export const db = {
       { name: 'Outros',         icon: '📌', color: '#94a3b8' },
     ];
 
-    await prisma.category.createMany({ data: defaults });
+    // Get existing category names to avoid duplicates
+    const existing = await prisma.category.findMany({ select: { name: true } });
+    const existingNames = new Set(existing.map(c => c.name.toLowerCase()));
+
+    const toInsert = defaults.filter(d => !existingNames.has(d.name.toLowerCase()));
+    if (toInsert.length > 0) {
+      await prisma.category.createMany({ data: toInsert });
+    }
+  },
+
+  updateCategory: async (id: string, data: Partial<Category>) => {
+    const updated = await prisma.category.update({
+      where: { id },
+      data: { ...data },
+    });
+    return updated as Category;
+  },
+
+  deleteCategory: async (id: string) => {
+    await prisma.category.delete({ where: { id } });
   },
 };
 
