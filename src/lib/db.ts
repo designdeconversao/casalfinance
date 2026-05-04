@@ -471,15 +471,51 @@ export const db = {
 
   // --- Categories ---
   getCategories: async () => {
-    return await prisma.category.findMany() as Category[];
+    return await prisma.category.findMany({ orderBy: { name: 'asc' } }) as Category[];
   },
 
   addCategory: async (category: Omit<Category, 'id'>) => {
     const newC = await prisma.category.create({
-      data: {
-        ...category,
-      },
+      data: { ...category },
     });
     return newC as Category;
+  },
+
+  seedCategories: async () => {
+    const count = await prisma.category.count();
+    if (count > 0) return; // Already seeded
+
+    const defaults: Omit<Category, 'id'>[] = [
+      { name: 'Moradia',        icon: '🏠', color: '#6366f1' },
+      { name: 'Alimentação',    icon: '🍽️', color: '#f97316' },
+      { name: 'Mercado',        icon: '🛒', color: '#22c55e' },
+      { name: 'Transporte',     icon: '🚗', color: '#3b82f6' },
+      { name: 'Saúde',          icon: '🏥', color: '#ec4899' },
+      { name: 'Educação',       icon: '📚', color: '#8b5cf6' },
+      { name: 'Lazer',          icon: '🎉', color: '#f59e0b' },
+      { name: 'Vestuário',      icon: '👕', color: '#06b6d4' },
+      { name: 'Beleza',         icon: '💄', color: '#d946ef' },
+      { name: 'Pet',            icon: '🐾', color: '#a3e635' },
+      { name: 'Assinaturas',    icon: '📺', color: '#14b8a6' },
+      { name: 'Eletrônicos',    icon: '📱', color: '#0ea5e9' },
+      { name: 'Viagem',         icon: '✈️', color: '#7c3aed' },
+      { name: 'Presentes',      icon: '🎁', color: '#e11d48' },
+      { name: 'Impostos/Taxas', icon: '📄', color: '#64748b' },
+      { name: 'Investimentos',  icon: '📈', color: '#10b981' },
+      { name: 'Salário',        icon: '💰', color: '#22c55e' },
+      { name: 'Freelance',      icon: '💻', color: '#3b82f6' },
+      { name: 'Outros',         icon: '📌', color: '#94a3b8' },
+    ];
+
+    await prisma.category.createMany({ data: defaults });
+  },
+
+  // --- Goals ---
+  updateGoal: async (id: string, data: Partial<Goal>) => {
+    const updated = await prisma.goal.update({
+      where: { id },
+      data: { ...data as any },
+    });
+    return { ...updated, createdAt: updated.createdAt.toISOString() } as Goal;
   },
 };

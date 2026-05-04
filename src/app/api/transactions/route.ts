@@ -25,7 +25,9 @@ export async function GET(request: NextRequest) {
   if (scope === 'pessoal') {
     transactions = transactions.filter(t => t.userId === user.id && t.scope === 'pessoal');
   } else if (scope === 'casal') {
-    transactions = transactions.filter(t => t.scope === 'casal');
+    // Show ALL transactions from BOTH partners (their personal + couple) — no duplication
+    // since couple transactions are stored once with one userId
+    transactions = transactions.filter(t => t.type !== 'transferencia');
   } else if (scope === 'parceiro') {
     const users = await db.getUsers();
     const partner = users.find(u => u.id !== user.id);
@@ -33,7 +35,7 @@ export async function GET(request: NextRequest) {
       transactions = transactions.filter(t => t.userId === partner.id && t.scope === 'pessoal');
     }
   } else {
-    // 'todos' - show user's personal + all couple
+    // 'todos' — user's personal + all couple (my financial view)
     transactions = transactions.filter(t => t.userId === user.id || t.scope === 'casal');
   }
 
@@ -86,11 +88,27 @@ export async function PUT(request: NextRequest) {
   try {
     const body = await request.json();
     const { id, ...updates } = body;
-    if (updates.amount) updates.amount = Number(updates.amount);
-    if (updates.rodrigoAmount) updates.user1Amount = Number(updates.rodrigoAmount);
-    if (updates.mariAmount) updates.user2Amount = Number(updates.mariAmount);
 
-    const transaction = await db.updateTransaction(id, updates);
+    // Map API fields to DB fields
+    const mapped: Record<string, unknown> = {};
+    if (updates.amount !== undefined)       mapped.amount = Number(updates.amount);
+    if (updates.description !== undefined)  mapped.description = updates.description;
+    if (updates.categoryLabel !== undefined) mapped.categoryLabel = updates.categoryLabel;
+    if (updates.type !== undefined)         mapped.type = updates.type;
+    if (updates.scope !== undefined)        mapped.scope = updates.scope;
+    if (updates.expenseType !== undefined)  mapped.expenseType = updates.expenseType;
+    if (updates.dueDate !== undefined)      mapped.dueDate = updates.dueDate;
+    if (updates.month !== undefined)        mapped.month = updates.month;
+    if (updates.status !== undefined)       mapped.status = updates.status;
+    if (updates.paidBy !== undefined)       mapped.paidBy = updates.paidBy;
+    if (updates.isRecurring !== undefined)  mapped.isRecurring = updates.isRecurring;
+    if (updates.walletId !== undefined)     mapped.walletId = updates.walletId;
+    if (updates.rodrigoAmount !== undefined) mapped.user1Amount = Number(updates.rodrigoAmount);
+    if (updates.mariAmount !== undefined)   mapped.user2Amount = Number(updates.mariAmount);
+    if (updates.installmentCurrent !== undefined) mapped.installmentCurrent = Number(updates.installmentCurrent);
+    if (updates.installmentTotal !== undefined)   mapped.installmentTotal = Number(updates.installmentTotal);
+
+    const transaction = await db.updateTransaction(id, mapped as any);
     if (!transaction) return NextResponse.json({ error: 'Não encontrado' }, { status: 404 });
 
     return NextResponse.json({ transaction });

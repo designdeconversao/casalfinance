@@ -9,6 +9,7 @@ interface GoalModalProps {
   isOpen: boolean;
   onClose: () => void;
   onSave: (data: GoalFormData) => Promise<void>;
+  editData?: GoalFormData & { id?: string };
 }
 
 export interface GoalFormData {
@@ -21,8 +22,8 @@ export interface GoalFormData {
   deadline: string;
 }
 
-export default function GoalModal({ isOpen, onClose, onSave }: GoalModalProps) {
-  const [form, setForm] = useState<GoalFormData>({
+export default function GoalModal({ isOpen, onClose, onSave, editData }: GoalModalProps) {
+  const defaultForm: GoalFormData = {
     title: '',
     description: '',
     icon: '🎯',
@@ -30,23 +31,17 @@ export default function GoalModal({ isOpen, onClose, onSave }: GoalModalProps) {
     calcType: 'fixed',
     targetAmount: '0',
     deadline: '',
-  });
+  };
+  const [form, setForm] = useState<GoalFormData>(editData || defaultForm);
   const [saving, setSaving] = useState(false);
 
-  // Reset form when modal opens
+  // Reset / pre-fill form when modal opens
   useEffect(() => {
     if (isOpen) {
-      setForm({
-        title: '',
-        description: '',
-        icon: '🎯',
-        scope: 'casal',
-        calcType: 'fixed',
-        targetAmount: '0',
-        deadline: '',
-      });
+      setForm(editData || defaultForm);
     }
-  }, [isOpen]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, editData]);
 
   if (!isOpen) return null;
 
@@ -101,7 +96,7 @@ export default function GoalModal({ isOpen, onClose, onSave }: GoalModalProps) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal-content" onClick={e => e.stopPropagation()}>
         <div className="modal-header">
-          <h2 className="modal-title">🎯 Novo Objetivo</h2>
+          <h2 className="modal-title">{editData ? '✏️ Editar Objetivo' : '🎯 Novo Objetivo'}</h2>
           <button className="modal-close" onClick={onClose}>✕</button>
         </div>
 
@@ -198,7 +193,7 @@ export default function GoalModal({ isOpen, onClose, onSave }: GoalModalProps) {
           <div className="modal-actions">
             <button type="button" className="btn-secondary" onClick={onClose} style={{ flex: 1 }}>Cancelar</button>
             <button type="submit" className="btn-primary" disabled={saving}>
-              {saving ? 'Criando...' : '🎯 Criar Meta'}
+              {saving ? (editData ? 'Salvando...' : 'Criando...') : (editData ? '💾 Salvar Alterações' : '🎯 Criar Meta')}
             </button>
           </div>
         </form>

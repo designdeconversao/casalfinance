@@ -44,27 +44,37 @@ export default function ExportModal({ isOpen, onClose, transactions }: ExportMod
       return;
     }
 
-    // CSV Generation
-    const headers = ['Data', 'Tipo', 'Descrição', 'Categoria', 'Valor (R$)', 'Status', 'Escopo'];
-    
+    // CSV Generation — semicolon separator (Excel BR default) + all fields quoted for safe UTF-8
+    const SEP = ';';
+    const q = (v: string) => `"${String(v).replace(/"/g, '""')}"`;
+
+    const headers = ['Data', 'Tipo', 'Descrição', 'Categoria', 'Valor (R$)', 'Status', 'Escopo', 'Pago Por', 'Parcelamento'];
+
     const rows = filtered.map(t => {
-      const type = t.type === 'entrada' ? 'Entrada' : 'Saída';
-      const amount = (t.amount).toFixed(2).replace('.', ',');
-      const date = new Date(t.dueDate).toLocaleDateString('pt-BR');
+      const type = t.type === 'entrada' ? 'Entrada' : t.type === 'saida' ? 'Saída' : 'Transferência';
+      const amount = t.amount.toFixed(2).replace('.', ',');
+      const date = new Date(t.dueDate + 'T12:00:00').toLocaleDateString('pt-BR');
       const scope = t.scope === 'casal' ? 'Casal' : 'Pessoal';
-      
-      // Escape description if it contains commas
-      const desc = t.description.includes(',') ? `"${t.description}"` : t.description;
-      
-      return [date, type, desc, t.categoryLabel, amount, t.status, scope].join(',');
+      const statusMap: Record<string, string> = {
+        pago: 'Pago', atrasado: 'Atrasado', a_vencer: 'À Vencer', recebido: 'Recebido', a_receber: 'À Receber',
+      };
+      const status = statusMap[t.status] || t.status;
+      const paidBy = t.paidBy || '';
+      const installment = t.installmentCurrent && t.installmentTotal
+        ? `${t.installmentCurrent}/${t.installmentTotal}`
+        : '';
+
+      return [date, type, t.description, t.categoryLabel, amount, status, scope, paidBy, installment]
+        .map(q)
+        .join(SEP);
     });
 
-    const csvContent = [headers.join(','), ...rows].join('\n');
-    
-    // Add BOM for correct UTF-8 rendering in Excel
+    const csvContent = [headers.map(q).join(SEP), ...rows].join('\r\n');
+
+    // UTF-8 BOM ensures Excel opens with correct encoding
     const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
     const url = URL.createObjectURL(blob);
-    
+
     const link = document.createElement('a');
     link.href = url;
     link.setAttribute('download', `extrato_${startDate}_a_${endDate}.csv`);

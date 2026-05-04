@@ -12,6 +12,9 @@ export async function GET(request: NextRequest) {
   const user = await authenticate(request);
   if (!user) return NextResponse.json({ error: 'Não autorizado' }, { status: 401 });
 
+  // Auto-seed default categories on first access
+  await db.seedCategories();
+
   const categories = await db.getCategories();
   return NextResponse.json({ categories });
 }

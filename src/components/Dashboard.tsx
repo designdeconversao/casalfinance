@@ -91,6 +91,8 @@ export default function Dashboard() {
   const [filterType, setFilterType] = useState('');
   const [filterStatus, setFilterStatus] = useState('');
   const [filterCategory, setFilterCategory] = useState('');
+  const [editingTransaction, setEditingTransaction] = useState<Transaction | null>(null);
+  const [editingGoal, setEditingGoal] = useState<Goal | null>(null);
 
   const fetchTransactions = useCallback(async () => {
     const params = new URLSearchParams();
@@ -126,11 +128,22 @@ export default function Dashboard() {
 
   // --- Handlers ---
   const handleSaveTransaction = async (data: TransactionFormData) => {
-    await fetch('/api/transactions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    if (editingTransaction) {
+      // EDIT mode — PUT
+      await fetch('/api/transactions', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: editingTransaction.id, ...data }),
+      });
+      setEditingTransaction(null);
+    } else {
+      // CREATE mode — POST
+      await fetch('/api/transactions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    }
     fetchTransactions();
     fetchWallets();
   };
@@ -163,11 +176,22 @@ export default function Dashboard() {
   };
 
   const handleSaveGoal = async (data: GoalFormData) => {
-    await fetch('/api/goals', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(data),
-    });
+    if (editingGoal) {
+      // EDIT mode — PUT
+      await fetch('/api/goals', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: editingGoal.id, ...data }),
+      });
+      setEditingGoal(null);
+    } else {
+      // CREATE mode — POST
+      await fetch('/api/goals', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data),
+      });
+    }
     fetchGoals();
   };
 
@@ -503,8 +527,8 @@ export default function Dashboard() {
               <button className="wallet-transfer-btn" onClick={() => setShowTransferModal(true)} title="Transferir entre carteiras">
                 🔄
               </button>
-              <button className="wallet-add-btn" onClick={() => setShowWalletMgmtModal(true)}>
-                ⚙️
+              <button className="wallet-add-btn" onClick={() => setShowWalletMgmtModal(true)} title="Gerenciar Carteiras">
+                ⚙️ Carteiras
               </button>
             </div>
 
@@ -718,6 +742,10 @@ export default function Dashboard() {
                             ✅
                           </button>
                         )}
+                        <button title="Editar" onClick={() => {
+                          setEditingTransaction(txn);
+                          setShowTxnModal(true);
+                        }}>✏️</button>
                         <button className="delete" title="Excluir" onClick={() => handleDeleteTransaction(txn.id)}>🗑️</button>
                       </div>
                     </div>
@@ -831,6 +859,10 @@ export default function Dashboard() {
                           <button title="Marcar como pago"
                             onClick={() => handleUpdateStatus(txn.id, txn.type === 'entrada' ? 'recebido' : 'pago')}>✅</button>
                         )}
+                        <button title="Editar" onClick={() => {
+                          setEditingTransaction(txn);
+                          setShowTxnModal(true);
+                        }}>✏️</button>
                         <button className="delete" title="Excluir"
                           onClick={() => handleDeleteTransaction(txn.id)}>🗑️</button>
                       </div>
@@ -907,6 +939,10 @@ export default function Dashboard() {
                           <button className="btn-secondary btn-sm" onClick={() => setSelectedGoalDetail(goal.id)}>
                             📋 Detalhes
                           </button>
+                          <button className="btn-secondary btn-sm" title="Editar" onClick={() => {
+                            setEditingGoal(goal);
+                            setShowGoalModal(true);
+                          }}>✏️</button>
                           <button className="btn-danger btn-sm" onClick={() => handleDeleteGoal(goal.id)}>🗑️</button>
                         </div>
                       </div>
@@ -1206,16 +1242,51 @@ export default function Dashboard() {
       {/* Modals */}
       <TransactionModal
         isOpen={showTxnModal}
-        onClose={() => setShowTxnModal(false)}
+        onClose={() => {
+          setShowTxnModal(false);
+          setEditingTransaction(null);
+        }}
         onSave={handleSaveTransaction}
         categories={categories}
         onCategoryCreated={fetchCategories}
         wallets={wallets}
+        editData={editingTransaction ? {
+          id: editingTransaction.id,
+          type: editingTransaction.type as 'entrada' | 'saida',
+          scope: editingTransaction.scope as 'pessoal' | 'casal',
+          expenseType: editingTransaction.expenseType as 'fixo' | 'flexivel',
+          description: editingTransaction.description,
+          amount: Math.round(editingTransaction.amount * 100).toString(),
+          dueDate: editingTransaction.dueDate,
+          categoryLabel: editingTransaction.categoryLabel,
+          status: editingTransaction.status,
+          installmentCurrent: editingTransaction.installmentCurrent?.toString() || '',
+          installmentTotal: editingTransaction.installmentTotal?.toString() || '',
+          isRecurring: editingTransaction.isRecurring,
+          month: editingTransaction.month,
+          paidBy: editingTransaction.paidBy as any,
+          rodrigoAmount: Math.round((editingTransaction.user1Amount || 0) * 100).toString(),
+          mariAmount: Math.round((editingTransaction.user2Amount || 0) * 100).toString(),
+          walletId: editingTransaction.walletId || '',
+        } : undefined}
       />
       <GoalModal
         isOpen={showGoalModal}
-        onClose={() => setShowGoalModal(false)}
+        onClose={() => {
+          setShowGoalModal(false);
+          setEditingGoal(null);
+        }}
         onSave={handleSaveGoal}
+        editData={editingGoal ? {
+          id: editingGoal.id,
+          title: editingGoal.title,
+          description: editingGoal.description,
+          icon: editingGoal.icon,
+          scope: editingGoal.scope as 'pessoal' | 'casal',
+          calcType: editingGoal.calcType || 'fixed',
+          targetAmount: Math.round(editingGoal.targetAmount * 100).toString(),
+          deadline: editingGoal.deadline,
+        } : undefined}
       />
       <DepositModal
         isOpen={showDepositModal}
