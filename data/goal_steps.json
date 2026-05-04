@@ -1,0 +1,13 @@
+[
+  {
+    "goalId": "68407b30-56c2-4997-880f-1b11ebccf01e",
+    "title": "Reservar hotel",
+    "estimatedAmount": 1500,
+    "deadline": "2026-08-29",
+    "completed": false,
+    "order": 1,
+    "note": "",
+    "id": "0c75a47e-e851-428d-966c-ffeb3700eec3",
+    "createdAt": "2026-04-23T20:44:58.685Z"
+  }
+]

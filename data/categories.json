@@ -1,0 +1,80 @@
+[
+  {
+    "id": "25e899ae-e842-4993-8574-559725fe8092",
+    "name": "Residencial",
+    "icon": "🏠",
+    "color": "#6366f1"
+  },
+  {
+    "id": "c3b7d9fb-b9ba-49eb-8b89-7604d4b63dd7",
+    "name": "Saúde/Fitness",
+    "icon": "💊",
+    "color": "#ec4899"
+  },
+  {
+    "id": "e983924d-1662-4d22-9db4-fc31ff36e568",
+    "name": "Tel/Internet",
+    "icon": "📱",
+    "color": "#3b82f6"
+  },
+  {
+    "id": "8cc009f8-4290-4b28-b6ad-b43bbe6120a4",
+    "name": "App/Ferramentas",
+    "icon": "🛠️",
+    "color": "#8b5cf6"
+  },
+  {
+    "id": "695e647d-f59b-4052-9e9b-3820ca0b5ece",
+    "name": "Cartão de Crédito",
+    "icon": "💳",
+    "color": "#f59e0b"
+  },
+  {
+    "id": "b3a9f8fd-0db8-4219-b8f1-4d88747ce3e4",
+    "name": "Insumos",
+    "icon": "📦",
+    "color": "#14b8a6"
+  },
+  {
+    "id": "29fafde9-a2d1-460e-8c19-b71b6b344b37",
+    "name": "Transporte",
+    "icon": "🚗",
+    "color": "#f97316"
+  },
+  {
+    "id": "c8249a5f-6146-457a-afc7-a509bf2c6f05",
+    "name": "Mercado",
+    "icon": "🛒",
+    "color": "#22c55e"
+  },
+  {
+    "id": "553e33f2-a280-4b64-8dc2-d6374c5f1432",
+    "name": "Alimentação",
+    "icon": "🍔",
+    "color": "#ef4444"
+  },
+  {
+    "id": "b0d3a43e-b1a3-403f-b83a-aebcaaf634b4",
+    "name": "Lazer",
+    "icon": "🎬",
+    "color": "#a855f7"
+  },
+  {
+    "id": "aa74799f-5232-40de-9981-8db542b70dde",
+    "name": "Educação",
+    "icon": "🎓",
+    "color": "#06b6d4"
+  },
+  {
+    "id": "846ef8be-174c-4aac-8458-dc82b3439264",
+    "name": "Outros",
+    "icon": "📌",
+    "color": "#64748b"
+  },
+  {
+    "id": "c1fc41c7-9db6-4974-b379-5b534ab706b2",
+    "name": "Internet",
+    "icon": "📱",
+    "color": "#64748b"
+  }
+]

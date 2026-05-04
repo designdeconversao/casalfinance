@@ -1,0 +1,124 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String        @id @default(uuid())
+  name         String
+  email        String        @unique
+  passwordHash String
+  role         String        // 'rodrigo' | 'mari'
+  createdAt    DateTime      @default(now())
+
+  transactions Transaction[]
+  goals        Goal[]
+  deposits     GoalDeposit[]
+  wallets      Wallet[]
+}
+
+model Wallet {
+  id        String   @id @default(uuid())
+  userId    String?  // Null if joint
+  name      String
+  balance   Float    @default(0)
+  isJoint   Boolean  @default(false)
+  color     String?
+  createdAt DateTime @default(now())
+
+  user         User?         @relation(fields: [userId], references: [id])
+  transactions Transaction[] @relation("SourceWallet")
+  transfersIn  Transaction[] @relation("DestWallet")
+  deposits     GoalDeposit[]
+}
+
+model Transaction {
+  id                 String   @id @default(uuid())
+  userId             String
+  walletId           String?
+  destWalletId       String?  // For transfers
+  type               String   // 'entrada' | 'saida' | 'transferencia'
+  scope              String   // 'pessoal' | 'casal'
+  expenseType        String   // 'fixo' | 'flexivel'
+  description        String
+  amount             Float
+  paidBy             String?  // 'rodrigo' | 'mari' | 'conjunta' | 'ambos'
+  user1Amount        Float?   
+  user2Amount        Float?   
+  dueDate            String   
+  installmentCurrent Int?
+  installmentTotal   Int?
+  categoryLabel      String
+  status             String   
+  month              String   
+  isRecurring        Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  linkedDepositId    String?
+
+  user       User    @relation(fields: [userId], references: [id])
+  wallet     Wallet? @relation("SourceWallet", fields: [walletId], references: [id])
+  destWallet Wallet? @relation("DestWallet", fields: [destWalletId], references: [id])
+}
+
+model Goal {
+  id              String   @id @default(uuid())
+  createdByUserId String
+  scope           String   // 'pessoal' | 'casal'
+  title           String
+  description     String
+  icon            String
+  targetAmount    Float
+  currentAmount   Float    @default(0)
+  calcType        String?  // 'fixed' | 'sum_of_steps'
+  deadline        String   // ISO string
+  status          String   // 'ativo' | 'concluido' | 'cancelado'
+  createdAt       DateTime @default(now())
+
+  user     User          @relation(fields: [createdByUserId], references: [id])
+  steps    GoalStep[]
+  deposits GoalDeposit[]
+}
+
+model GoalDeposit {
+  id           String   @id @default(uuid())
+  goalId       String
+  userId       String
+  amount       Float
+  depositDate  String   // ISO string
+  source       String
+  note         String
+  createdAt    DateTime @default(now())
+  linkedStepId String?
+  walletId     String?
+
+  goal   Goal    @relation(fields: [goalId], references: [id])
+  user   User    @relation(fields: [userId], references: [id])
+  wallet Wallet? @relation(fields: [walletId], references: [id])
+}
+
+model GoalStep {
+  id              String   @id @default(uuid())
+  goalId          String
+  title           String
+  estimatedAmount Float
+  currentAmount   Float    @default(0)
+  deadline        String   // ISO
+  completed       Boolean  @default(false)
+  completedAt     String?  // ISO
+  order           Int
+  note            String?
+  createdAt       DateTime @default(now())
+
+  goal Goal @relation(fields: [goalId], references: [id])
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  icon  String
+  color String
+}

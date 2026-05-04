@@ -1,0 +1,32 @@
+[
+  {
+    "goalId": "5e5ac3f4-7156-4971-bdd6-047c43d1b312",
+    "userId": "f9399cb5-38f7-4b52-b2f8-befbf44aea18",
+    "amount": 200,
+    "depositDate": "2026-04-23",
+    "source": "Poupança",
+    "note": "",
+    "id": "5a0e7451-0e77-4e41-8488-a8445be26d75",
+    "createdAt": "2026-04-23T20:36:13.159Z"
+  },
+  {
+    "goalId": "5e5ac3f4-7156-4971-bdd6-047c43d1b312",
+    "userId": "f9399cb5-38f7-4b52-b2f8-befbf44aea18",
+    "amount": 2300,
+    "depositDate": "2026-04-23",
+    "source": "Poupança",
+    "note": "",
+    "id": "d6e8a50f-51ab-4345-a6e8-9223fa037d49",
+    "createdAt": "2026-04-23T20:37:00.488Z"
+  },
+  {
+    "goalId": "68407b30-56c2-4997-880f-1b11ebccf01e",
+    "userId": "f9399cb5-38f7-4b52-b2f8-befbf44aea18",
+    "amount": 300,
+    "depositDate": "2026-04-23",
+    "source": "Poupança",
+    "note": "",
+    "id": "71c9ff07-9520-4f58-9481-f824b76aecbf",
+    "createdAt": "2026-04-23T20:45:23.329Z"
+  }
+]

@@ -1,0 +1,28 @@
+[
+  {
+    "createdByUserId": "f9399cb5-38f7-4b52-b2f8-befbf44aea18",
+    "scope": "casal",
+    "title": "Notebook",
+    "description": "Para Mari",
+    "icon": "💻",
+    "targetAmount": 2500,
+    "calcType": "fixed",
+    "deadline": "2026-06-30",
+    "status": "concluido",
+    "id": "5e5ac3f4-7156-4971-bdd6-047c43d1b312",
+    "createdAt": "2026-04-23T20:35:48.834Z"
+  },
+  {
+    "createdByUserId": "f9399cb5-38f7-4b52-b2f8-befbf44aea18",
+    "scope": "casal",
+    "title": "Viagem JP",
+    "description": "7 dias ",
+    "icon": "🏖️",
+    "targetAmount": 0,
+    "calcType": "sum_of_steps",
+    "deadline": "2026-12-31",
+    "status": "concluido",
+    "id": "68407b30-56c2-4997-880f-1b11ebccf01e",
+    "createdAt": "2026-04-23T20:44:35.344Z"
+  }
+]
