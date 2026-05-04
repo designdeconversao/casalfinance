@@ -509,13 +509,5 @@ export const db = {
 
     await prisma.category.createMany({ data: defaults });
   },
-
-  // --- Goals ---
-  updateGoal: async (id: string, data: Partial<Goal>) => {
-    const updated = await prisma.goal.update({
-      where: { id },
-      data: { ...data as any },
-    });
-    return { ...updated, createdAt: updated.createdAt.toISOString() } as Goal;
-  },
 };
+
