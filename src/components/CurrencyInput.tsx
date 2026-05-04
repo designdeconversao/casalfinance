@@ -132,8 +132,3 @@ export function centsToReais(rawCents: string): number {
 export function reaisToCents(reais: number): string {
   return Math.round(reais * 100).toString();
 }
-
-// Helper to convert raw cents string to reais number
-export function centsToReais(cents: string): number {
-  return parseInt(cents || '0', 10) / 100;
-}
