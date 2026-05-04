@@ -17,64 +17,232 @@ interface CategoryManagementModalProps {
   onDelete: (id: string) => Promise<void>;
 }
 
-// Curated emoji set organized by category (WhatsApp-style)
-const EMOJI_GROUPS = [
-  {
-    label: 'Finanças',
-    emojis: ['💰', '💵', '💳', '🏦', '📈', '📉', '💹', '🪙', '💎', '🏆', '💸', '🤑'],
-  },
-  {
-    label: 'Casa',
-    emojis: ['🏠', '🏡', '🏢', '🏗️', '🔑', '🛋️', '🛏️', '🚿', '💡', '🔧', '🪣', '🧹'],
-  },
-  {
-    label: 'Alimentação',
-    emojis: ['🍽️', '🥘', '🍕', '🍔', '🥗', '🥩', '🍞', '🛒', '☕', '🍺', '🍰', '🌮'],
-  },
-  {
-    label: 'Transporte',
-    emojis: ['🚗', '🚙', '🏍️', '✈️', '🚌', '🚆', '⛽', '🅿️', '🛵', '🚢', '🚁', '🛻'],
-  },
-  {
-    label: 'Saúde',
-    emojis: ['🏥', '💊', '🩺', '🩻', '💉', '🏋️', '🧘', '🦷', '👓', '🩹', '🧬', '❤️‍🩹'],
-  },
-  {
-    label: 'Educação',
-    emojis: ['📚', '🎓', '✏️', '📝', '🖥️', '📐', '🔬', '🏫', '📖', '🧑‍💻', '📓', '🎒'],
-  },
-  {
-    label: 'Lazer',
-    emojis: ['🎉', '🎮', '🎬', '🎵', '⚽', '🏖️', '🎭', '🎸', '🏄', '🎲', '🎯', '🎪'],
-  },
-  {
-    label: 'Compras',
-    emojis: ['👕', '👟', '👗', '💄', '👜', '💍', '🕶️', '👒', '🧴', '🛍️', '🧣', '⌚'],
-  },
-  {
-    label: 'Serviços',
-    emojis: ['📺', '📱', '💻', '📡', '🔒', '📄', '⚙️', '🛠️', '📦', '🔌', '🌐', '📨'],
-  },
-  {
-    label: 'Família',
-    emojis: ['👨‍👩‍👧', '🐾', '🎁', '🎂', '👶', '🐕', '🐈', '🌹', '💑', '🏠', '👵', '👴'],
-  },
-  {
-    label: 'Outros',
-    emojis: ['📌', '📊', '🗓️', '⭐', '🌟', '🔖', '🏷️', '📂', '🗃️', '🔔', '💬', '❓'],
-  },
+// Each entry: [emoji, ...searchTerms]
+const EMOJI_DATA: [string, string, ...string[]][] = [
+  // Finanças
+  ['💰','dinheiro','grana','financas','saldo'],
+  ['💵','cedula','nota','real','dolar'],
+  ['💳','cartao','credito','debito','banco'],
+  ['🏦','banco','instituicao','financeiro'],
+  ['📈','alta','grafico','investimento','crescimento'],
+  ['📉','queda','grafico','prejuizo'],
+  ['💹','bolsa','acoes','cambio'],
+  ['🪙','moeda','coin','centavo'],
+  ['💎','diamante','precioso','luxo'],
+  ['🏆','premio','conquista','trofeu'],
+  ['💸','gasto','dinheiro voando','despesa'],
+  ['🤑','rico','dinheiro','ganho'],
+  ['💰','poupanca','reserva','fundo'],
+  ['📊','relatorio','grafico','analise'],
+  ['🔐','seguro','protecao','cofre'],
+  // Casa
+  ['🏠','casa','lar','moradia','imovel'],
+  ['🏡','casa','jardim','residencia'],
+  ['🏢','predio','empresa','comercio','escritorio'],
+  ['🔑','chave','acesso','aluguel'],
+  ['🛋️','sofa','sala','movel','decoracao'],
+  ['🛏️','cama','quarto','dormitorio'],
+  ['🚿','banho','chuveiro','banheiro'],
+  ['💡','luz','energia','eletricidade','lampada'],
+  ['🔧','ferramenta','manutencao','reparo'],
+  ['🪣','limpeza','balde','manutencao'],
+  ['🧹','faxina','limpeza','varredor'],
+  ['🪑','cadeira','movel','assento'],
+  ['🖼️','quadro','decoracao','arte'],
+  ['🛁','banheiro','banheira','chuveiro'],
+  ['🪟','janela','cortina','persiana'],
+  ['🚪','porta','entrada','acesso'],
+  ['🏗️','construcao','obra','reforma'],
+  ['🧰','ferramentas','caixa','reparo'],
+  // Alimentação
+  ['🍽️','refeicao','almoco','jantar','prato'],
+  ['🥘','comida','prato','almoco'],
+  ['🍕','pizza','lanche','fast food'],
+  ['🍔','hamburguer','lanche','fast food'],
+  ['🥗','salada','saudavel','dieta'],
+  ['🥩','carne','churrasco','proteina'],
+  ['🍞','pao','padaria','cafe'],
+  ['🛒','mercado','supermercado','compras','feira'],
+  ['☕','cafe','bebida','matinal'],
+  ['🍺','cerveja','bebida','bar'],
+  ['🍰','bolo','doce','sobremesa','aniversario'],
+  ['🌮','taco','comida','mexicana'],
+  ['🍜','macarrao','massa','jantar'],
+  ['🍣','sushi','japones','peixe'],
+  ['🥤','bebida','refrigerante','suco'],
+  ['🍷','vinho','bebida','jantar'],
+  ['🥚','ovo','cafe da manha','proteina'],
+  ['🥦','verdura','legume','feira','mercado'],
+  ['🍗','frango','proteina','almoco'],
+  ['🫙','pote','mantimentos','despensa'],
+  // Transporte
+  ['🚗','carro','automovel','combustivel'],
+  ['🚙','suv','carro','automovel'],
+  ['🏍️','moto','motocicleta','combustivel'],
+  ['✈️','aviao','viagem','passagem'],
+  ['🚌','onibus','transporte','coletivo'],
+  ['🚆','trem','metro','trilho'],
+  ['⛽','combustivel','gasolina','abastecimento'],
+  ['🅿️','estacionamento','vaga','parking'],
+  ['🛵','scooter','moto','entrega'],
+  ['🚢','navio','cruzeiro','viagem'],
+  ['🚁','helicoptero','taxi aereo'],
+  ['🛻','picape','carro','caminhonete'],
+  ['🚕','taxi','99','uber','corrida'],
+  ['🚲','bicicleta','bike','transporte'],
+  ['🛴','patinete','mobilidade'],
+  ['⚓','porto','navio','maritimo'],
+  // Saúde
+  ['🏥','hospital','saude','medico'],
+  ['💊','remedio','medicamento','farmacia'],
+  ['🩺','medico','consulta','clinica'],
+  ['💉','vacina','injecao','exame'],
+  ['🏋️','academia','musculacao','exercicio'],
+  ['🧘','yoga','meditacao','bem estar'],
+  ['🦷','dentista','odontologia','dentes'],
+  ['👓','oculos','otica','visao'],
+  ['🩹','curativo','ferimento','primeiros socorros'],
+  ['🧬','genetica','exame','laboratorio'],
+  ['❤️‍🩹','saude','bem estar','cuidado'],
+  ['🏃','corrida','exercicio','esporte'],
+  ['🥗','dieta','alimentacao saudavel','nutricao'],
+  ['🧴','farmacia','higiene','creme'],
+  ['🩻','raio x','exame','diagnostico'],
+  // Educação
+  ['📚','livros','estudo','educacao'],
+  ['🎓','formatura','curso','faculdade'],
+  ['✏️','escrita','estudo','escola'],
+  ['📝','anotacao','tarefa','caderno'],
+  ['🖥️','computador','informatica','tecnologia'],
+  ['📐','geometria','matematica','escola'],
+  ['🔬','ciencia','laboratorio','pesquisa'],
+  ['🏫','escola','colegio','ensino'],
+  ['📖','leitura','livro','aprendizado'],
+  ['🧑‍💻','programador','tecnologia','informatica'],
+  ['📓','caderno','anotacao','estudo'],
+  ['🎒','mochila','escola','material'],
+  ['🖊️','caneta','escrever','assinar'],
+  ['📏','regua','geometria','escola'],
+  ['📡','internet','satelite','tecnologia'],
+  // Lazer
+  ['🎉','festa','comemoracao','celebracao'],
+  ['🎮','jogo','videogame','entretenimento'],
+  ['🎬','cinema','filme','entretenimento'],
+  ['🎵','musica','show','entretenimento'],
+  ['⚽','futebol','esporte','jogo'],
+  ['🏖️','praia','ferias','turismo'],
+  ['🎭','teatro','cultura','arte'],
+  ['🎸','violao','musica','banda'],
+  ['🏄','surf','praia','esporte'],
+  ['🎲','jogo de tabuleiro','entretenimento'],
+  ['🎯','meta','jogo','precisao'],
+  ['🎪','circo','show','entretenimento'],
+  ['🎨','arte','pintura','criatividade'],
+  ['📷','foto','camera','viagem'],
+  ['🏕️','camping','natureza','ferias'],
+  ['🎡','parque','diversao','lazer'],
+  ['🏀','basquete','esporte','jogo'],
+  ['🎾','tenis','esporte','raquete'],
+  ['🎳','boliche','lazer','jogo'],
+  ['🏊','natacao','piscina','esporte'],
+  // Compras
+  ['👕','roupa','vestuario','camisa'],
+  ['👟','tenis','calçado','sapato'],
+  ['👗','vestido','roupa','moda'],
+  ['💄','maquiagem','beleza','cosmetico'],
+  ['👜','bolsa','acessorio','moda'],
+  ['💍','anel','joalheria','presente'],
+  ['🕶️','oculos sol','acessorio','moda'],
+  ['👒','chapeu','acessorio','moda'],
+  ['🧴','cosmetico','beleza','higiene'],
+  ['🛍️','compras','sacola','shopping'],
+  ['🧣','cachecol','acessorio','roupa'],
+  ['⌚','relogio','acessorio','tempo'],
+  ['👔','camisa social','roupa','trabalho'],
+  ['🧥','casaco','roupa','frio'],
+  ['👠','salto','calçado','moda'],
+  ['💻','notebook','tecnologia','eletronico'],
+  ['📱','celular','smartphone','eletronico'],
+  ['🎧','fone','musica','eletronico'],
+  ['📺','televisao','eletronico','entretenimento'],
+  ['🖨️','impressora','escritorio','eletronico'],
+  // Serviços / Assinaturas
+  ['📡','streaming','internet','assinatura'],
+  ['🔒','seguranca','protecao','seguro'],
+  ['📄','documento','contrato','servico'],
+  ['⚙️','configuracao','servico','manutencao'],
+  ['🛠️','reparo','conserto','servico'],
+  ['📦','entrega','encomenda','correios'],
+  ['🔌','energia','eletricidade','instalacao'],
+  ['🌐','internet','site','web'],
+  ['📨','email','comunicacao','servico'],
+  ['☁️','nuvem','cloud','armazenamento'],
+  ['📲','app','servico digital','assinatura'],
+  ['🔔','notificacao','alerta','aviso'],
+  // Família / Pessoal
+  ['👨‍👩‍👧','familia','casal','filho'],
+  ['🐾','pet','animal','cachorro','gato'],
+  ['🎁','presente','regalo','aniversario'],
+  ['🎂','aniversario','bolo','comemoração'],
+  ['👶','bebe','filho','crianca'],
+  ['🐕','cachorro','pet','animal'],
+  ['🐈','gato','pet','animal'],
+  ['🌹','flor','presente','romantico'],
+  ['💑','casal','namorados','amor'],
+  ['👵','idoso','mãe','pai','familia'],
+  ['🍼','bebe','mamadeira','filho'],
+  ['🧒','crianca','filho','escola'],
+  // Trabalho / Profissional
+  ['💼','trabalho','profissional','escritorio'],
+  ['🖊️','assinatura','contrato','trabalho'],
+  ['📋','lista','tarefa','trabalho'],
+  ['🗓️','agenda','calendario','compromisso'],
+  ['📞','telefone','ligacao','contato'],
+  ['🤝','parceria','negocio','acordo'],
+  ['👔','trabalho','profissional','formal'],
+  ['🏢','empresa','trabalho','escritorio'],
+  ['💼','maleta','trabalho','negocio'],
+  ['📌','fixo','importante','anotacao'],
+  // Outros / Genérico
+  ['⭐','estrela','favorito','destaque'],
+  ['🌟','destaque','especial','importante'],
+  ['🔖','marcador','categoria','label'],
+  ['🏷️','etiqueta','categoria','tag'],
+  ['📂','pasta','arquivo','organizacao'],
+  ['🗃️','organizacao','arquivo','pasta'],
+  ['❓','duvida','outros','sem categoria'],
+  ['🔀','diverso','variado','outros'],
+  ['📌','fixo','recorrente','mensal'],
+  ['✅','concluido','pago','confirmado'],
+  ['⚡','energia','rapido','urgente'],
+  ['🌍','internacional','exterior','viagem'],
 ];
 
 const PRESET_COLORS = [
-  '#6366f1', '#8b5cf6', '#ec4899', '#ef4444', '#f97316',
-  '#f59e0b', '#22c55e', '#10b981', '#14b8a6', '#3b82f6',
-  '#0ea5e9', '#d946ef', '#a3e635', '#64748b',
+  '#6366f1','#8b5cf6','#ec4899','#ef4444','#f97316',
+  '#f59e0b','#22c55e','#10b981','#14b8a6','#3b82f6',
+  '#0ea5e9','#d946ef','#64748b','#84cc16',
+];
+
+const GROUPS = [
+  { label: '💰 Finanças',    range: [0, 14] },
+  { label: '🏠 Casa',        range: [15, 31] },
+  { label: '🍽️ Alimentação', range: [32, 51] },
+  { label: '🚗 Transporte',  range: [52, 67] },
+  { label: '🏥 Saúde',       range: [68, 81] },
+  { label: '📚 Educação',    range: [82, 96] },
+  { label: '🎉 Lazer',       range: [97, 116] },
+  { label: '🛍️ Compras',    range: [117, 136] },
+  { label: '📡 Serviços',    range: [137, 148] },
+  { label: '👨‍👩‍👧 Família',  range: [149, 160] },
+  { label: '💼 Trabalho',    range: [161, 171] },
+  { label: '🔖 Outros',      range: [172, 181] },
 ];
 
 type View = 'list' | 'add' | 'edit';
 
 export default function CategoryManagementModal({
-  isOpen, onClose, categories, onAdd, onEdit, onDelete
+  isOpen, onClose, categories, onAdd, onEdit, onDelete,
 }: CategoryManagementModalProps) {
   const [view, setView] = useState<View>('list');
   const [selected, setSelected] = useState<Category | null>(null);
@@ -83,28 +251,30 @@ export default function CategoryManagementModal({
   const [color, setColor] = useState('#6366f1');
   const [saving, setSaving] = useState(false);
   const [emojiSearch, setEmojiSearch] = useState('');
-  const [search, setSearch] = useState('');
+  const [catSearch, setCatSearch] = useState('');
+  const [showPicker, setShowPicker] = useState(false);
 
   if (!isOpen) return null;
 
   const filteredEmojis = useMemo(() => {
-    if (!emojiSearch) return EMOJI_GROUPS;
-    const q = emojiSearch.toLowerCase();
-    return EMOJI_GROUPS.map(g => ({
-      ...g,
-      emojis: g.emojis.filter(e => g.label.toLowerCase().includes(q)),
-    })).filter(g => g.label.toLowerCase().includes(q) || g.emojis.length > 0);
+    if (!emojiSearch.trim()) return null; // show groups
+    const q = emojiSearch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    return EMOJI_DATA.filter(([, ...terms]) =>
+      terms.some(t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q))
+    ).map(([e]) => e);
   }, [emojiSearch]);
 
-  const filteredCategories = search
-    ? categories.filter(c => c.name.toLowerCase().includes(search.toLowerCase()))
+  const filteredCategories = catSearch
+    ? categories.filter(c => c.name.toLowerCase().includes(catSearch.toLowerCase()))
     : categories;
 
   const openAdd = () => {
-    setName(''); setIcon('📌'); setColor('#6366f1'); setView('add');
+    setName(''); setIcon('📌'); setColor('#6366f1');
+    setEmojiSearch(''); setShowPicker(false); setView('add');
   };
   const openEdit = (c: Category) => {
-    setSelected(c); setName(c.name); setIcon(c.icon); setColor(c.color || '#6366f1'); setView('edit');
+    setSelected(c); setName(c.name); setIcon(c.icon);
+    setColor(c.color || '#6366f1'); setEmojiSearch(''); setShowPicker(false); setView('edit');
   };
 
   const handleAdd = async (e: React.FormEvent) => {
@@ -112,8 +282,7 @@ export default function CategoryManagementModal({
     if (!name.trim()) return;
     setSaving(true);
     await onAdd({ name: name.trim(), icon, color });
-    setSaving(false);
-    setView('list');
+    setSaving(false); setView('list');
   };
 
   const handleEdit = async (e: React.FormEvent) => {
@@ -121,51 +290,60 @@ export default function CategoryManagementModal({
     if (!selected) return;
     setSaving(true);
     await onEdit(selected.id, { name: name.trim(), icon, color });
-    setSaving(false);
-    setView('list');
+    setSaving(false); setView('list');
   };
 
   const handleDelete = (c: Category) => {
-    if (window.confirm(`Excluir a categoria "${c.name}"?`)) {
-      onDelete(c.id);
-    }
+    if (window.confirm(`Excluir a categoria "${c.name}"?`)) onDelete(c.id);
   };
+
+  const EmojiGrid = ({ emojis }: { emojis: string[] }) => (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+      {emojis.map((e, i) => (
+        <button key={`${e}-${i}`} type="button"
+          onClick={() => { setIcon(e); setShowPicker(false); }}
+          style={{
+            width: 38, height: 38, fontSize: 22, borderRadius: 8,
+            border: 'none', cursor: 'pointer', background: icon === e ? '#6366f122' : 'transparent',
+            outline: icon === e ? '2px solid #6366f1' : 'none',
+            transition: 'all 0.1s',
+          }}>
+          {e}
+        </button>
+      ))}
+    </div>
+  );
 
   const EmojiPicker = () => (
     <div style={{
-      border: '1px solid var(--border-glass)', borderRadius: 'var(--border-radius-sm)',
+      border: '1px solid var(--border-glass)', borderRadius: 12,
       background: 'var(--bg-secondary)', overflow: 'hidden', marginTop: 8,
     }}>
-      <div style={{ padding: '8px 12px', borderBottom: '1px solid var(--border-glass)' }}>
+      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-glass)' }}>
         <input
           className="form-input"
-          placeholder="🔍 Buscar emoji..."
+          placeholder="🔍 Buscar emoji (ex: casa, saúde, comida...)"
           value={emojiSearch}
           onChange={e => setEmojiSearch(e.target.value)}
-          style={{ marginBottom: 0 }}
+          style={{ marginBottom: 0, fontSize: 13 }}
         />
       </div>
-      <div style={{ maxHeight: 200, overflowY: 'auto', padding: 12 }}>
-        {filteredEmojis.map(group => (
-          <div key={group.label} style={{ marginBottom: 12 }}>
-            <div style={{ fontSize: 11, color: 'var(--text-muted)', marginBottom: 6, fontWeight: 600, textTransform: 'uppercase', letterSpacing: 1 }}>
-              {group.label}
+      <div style={{ maxHeight: 260, overflowY: 'auto', padding: '10px 12px' }}>
+        {filteredEmojis ? (
+          filteredEmojis.length === 0
+            ? <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 16, fontSize: 13 }}>Nenhum emoji encontrado</div>
+            : <EmojiGrid emojis={filteredEmojis} />
+        ) : (
+          GROUPS.map(g => (
+            <div key={g.label} style={{ marginBottom: 14 }}>
+              <div style={{
+                fontSize: 11, color: 'var(--text-muted)', fontWeight: 700,
+                textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6,
+              }}>{g.label}</div>
+              <EmojiGrid emojis={EMOJI_DATA.slice(g.range[0], g.range[1] + 1).map(([e]) => e)} />
             </div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
-              {group.emojis.map(e => (
-                <button key={e} type="button" onClick={() => setIcon(e)} style={{
-                  width: 36, height: 36, fontSize: 20, borderRadius: 8, border: 'none',
-                  cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  background: icon === e ? 'var(--purple-bg)' : 'transparent',
-                  outline: icon === e ? '2px solid var(--purple)' : 'none',
-                  transition: 'all 0.1s ease',
-                }}>
-                  {e}
-                </button>
-              ))}
-            </div>
-          </div>
-        ))}
+          ))
+        )}
       </div>
     </div>
   );
@@ -174,22 +352,32 @@ export default function CategoryManagementModal({
     <form onSubmit={onSubmit}>
       <div className="form-group">
         <label>Nome da Categoria</label>
-        <input className="form-input" value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: Mercado" />
+        <input className="form-input" value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: Mercado, Saúde, Academia..." />
       </div>
+
       <div className="form-group">
-        <label>Ícone Selecionado</label>
-        <div style={{
-          display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
-          background: `${color}22`, borderRadius: 10, border: `2px solid ${color}44`, marginBottom: 8,
-        }}>
-          <span style={{ fontSize: 32 }}>{icon}</span>
+        <label>Ícone</label>
+        <div
+          onClick={() => setShowPicker(p => !p)}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+            background: `${color}18`, borderRadius: 10, border: `2px solid ${color}44`,
+            cursor: 'pointer', userSelect: 'none',
+          }}>
+          <span style={{ fontSize: 30 }}>{icon}</span>
           <div>
-            <div style={{ fontWeight: 600, color: 'var(--text-primary)' }}>{name || 'Nome da categoria'}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>Prévia da categoria</div>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>{name || 'Prévia da categoria'}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              {showPicker ? 'Clique para fechar' : 'Clique para escolher ícone'}
+            </div>
           </div>
+          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
+            {showPicker ? '▲' : '▼'}
+          </span>
         </div>
-        <EmojiPicker />
+        {showPicker && <EmojiPicker />}
       </div>
+
       <div className="form-group">
         <label>Cor</label>
         <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
@@ -199,14 +387,14 @@ export default function CategoryManagementModal({
               outline: color === c ? '3px solid white' : 'none',
               boxShadow: color === c ? `0 0 0 4px ${c}55` : 'none',
               transform: color === c ? 'scale(1.2)' : 'scale(1)',
-              transition: 'all 0.15s ease',
+              transition: 'all 0.15s',
             }} />
           ))}
-          <input type="color" value={color} onChange={e => setColor(e.target.value)} style={{
-            width: 30, height: 30, borderRadius: 8, border: 'none', cursor: 'pointer', padding: 2,
-          }} />
+          <input type="color" value={color} onChange={e => setColor(e.target.value)}
+            style={{ width: 30, height: 30, borderRadius: 8, border: 'none', cursor: 'pointer', padding: 2 }} />
         </div>
       </div>
+
       <div className="modal-actions">
         <button type="button" className="btn-secondary" onClick={() => setView('list')}>Cancelar</button>
         <button type="submit" className="btn-primary" disabled={saving}>
@@ -222,7 +410,7 @@ export default function CategoryManagementModal({
         <div className="modal-header">
           <h2 className="modal-title">
             {view === 'list' && '🗂️ Categorias'}
-            {view === 'add' && '➕ Nova Categoria'}
+            {view === 'add'  && '➕ Nova Categoria'}
             {view === 'edit' && '✏️ Editar Categoria'}
           </h2>
           <button className="modal-close" onClick={() => view === 'list' ? onClose() : setView('list')}>
@@ -233,18 +421,11 @@ export default function CategoryManagementModal({
         {view === 'list' && (
           <>
             <div style={{ marginBottom: 12 }}>
-              <input
-                className="form-input"
-                placeholder="🔍 Buscar categoria..."
-                value={search}
-                onChange={e => setSearch(e.target.value)}
-              />
+              <input className="form-input" placeholder="🔍 Buscar categoria..."
+                value={catSearch} onChange={e => setCatSearch(e.target.value)} />
             </div>
-            <div style={{
-              maxHeight: 380, overflowY: 'auto',
-              display: 'flex', flexDirection: 'column', gap: 8,
-              marginBottom: 16,
-            }}>
+
+            <div style={{ maxHeight: 380, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
               {filteredCategories.length === 0 ? (
                 <div className="empty-state" style={{ padding: '24px 0' }}>
                   <div className="empty-state-icon">🗂️</div>
@@ -252,11 +433,9 @@ export default function CategoryManagementModal({
                 </div>
               ) : filteredCategories.map(c => (
                 <div key={c.id} style={{
-                  display: 'grid', gridTemplateColumns: '1fr auto',
-                  gap: 8, padding: '10px 14px',
-                  background: 'var(--bg-glass)', borderRadius: 'var(--border-radius-sm)',
-                  border: '1px solid var(--border-glass)',
-                  alignItems: 'center',
+                  display: 'grid', gridTemplateColumns: '1fr auto', gap: 8,
+                  padding: '10px 14px', background: 'var(--bg-glass)',
+                  borderRadius: 'var(--border-radius-sm)', border: '1px solid var(--border-glass)', alignItems: 'center',
                 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
                     <div style={{
@@ -265,31 +444,30 @@ export default function CategoryManagementModal({
                       border: `2px solid ${c.color || '#6366f1'}44`,
                       display: 'flex', alignItems: 'center', justifyContent: 'center',
                       fontSize: 20, flexShrink: 0,
-                    }}>
-                      {c.icon}
-                    </div>
+                    }}>{c.icon}</div>
                     <span style={{ fontWeight: 500, fontSize: 14 }}>{c.name}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 4 }}>
                     <button onClick={() => openEdit(c)} title="Editar" style={{
-                      background: 'var(--purple-bg)', color: 'var(--purple)', border: 'none',
-                      borderRadius: 8, padding: '5px 10px', cursor: 'pointer', fontSize: 13
+                      background: 'var(--purple-bg)', color: 'var(--purple)',
+                      border: 'none', borderRadius: 8, padding: '5px 10px', cursor: 'pointer', fontSize: 13,
                     }}>✏️</button>
                     <button onClick={() => handleDelete(c)} title="Excluir" style={{
-                      background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: 'none',
-                      borderRadius: 8, padding: '5px 10px', cursor: 'pointer', fontSize: 13
+                      background: 'rgba(239,68,68,0.1)', color: '#ef4444',
+                      border: 'none', borderRadius: 8, padding: '5px 10px', cursor: 'pointer', fontSize: 13,
                     }}>🗑️</button>
                   </div>
                 </div>
               ))}
             </div>
+
             <button className="btn-primary" style={{ width: '100%' }} onClick={openAdd}>
               ➕ Adicionar Categoria
             </button>
           </>
         )}
 
-        {view === 'add' && <CategoryForm onSubmit={handleAdd} />}
+        {view === 'add'  && <CategoryForm onSubmit={handleAdd} />}
         {view === 'edit' && <CategoryForm onSubmit={handleEdit} />}
       </div>
     </div>
