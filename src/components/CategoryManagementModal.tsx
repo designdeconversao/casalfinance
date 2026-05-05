@@ -244,6 +244,7 @@ type View = 'list' | 'add' | 'edit';
 export default function CategoryManagementModal({
   isOpen, onClose, categories, onAdd, onEdit, onDelete,
 }: CategoryManagementModalProps) {
+  // ── ALL HOOKS MUST BE BEFORE ANY CONDITIONAL RETURN ──
   const [view, setView] = useState<View>('list');
   const [selected, setSelected] = useState<Category | null>(null);
   const [name, setName] = useState('');
@@ -253,8 +254,6 @@ export default function CategoryManagementModal({
   const [emojiSearch, setEmojiSearch] = useState('');
   const [catSearch, setCatSearch] = useState('');
   const [showPicker, setShowPicker] = useState(false);
-
-  if (!isOpen) return null;
 
   const filteredEmojis = useMemo(() => {
     if (!emojiSearch.trim()) return null; // show groups
@@ -267,6 +266,9 @@ export default function CategoryManagementModal({
   const filteredCategories = catSearch
     ? categories.filter(c => c.name.toLowerCase().includes(catSearch.toLowerCase()))
     : categories;
+
+  // Conditional return AFTER all hooks
+  if (!isOpen) return null;
 
   const openAdd = () => {
     setName(''); setIcon('📌'); setColor('#6366f1');
