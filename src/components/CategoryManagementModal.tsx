@@ -17,7 +17,7 @@ interface CategoryManagementModalProps {
   onDelete: (id: string) => Promise<void>;
 }
 
-// Each entry: [emoji, ...searchTerms]
+// ─── Static data (outside component) ────────────────────────────────────────
 const EMOJI_DATA: [string, string, ...string[]][] = [
   // Finanças
   ['💰','dinheiro','grana','financas','saldo'],
@@ -32,9 +32,9 @@ const EMOJI_DATA: [string, string, ...string[]][] = [
   ['🏆','premio','conquista','trofeu'],
   ['💸','gasto','dinheiro voando','despesa'],
   ['🤑','rico','dinheiro','ganho'],
-  ['💰','poupanca','reserva','fundo'],
   ['📊','relatorio','grafico','analise'],
   ['🔐','seguro','protecao','cofre'],
+  ['🏧','caixa','atm','saque'],
   // Casa
   ['🏠','casa','lar','moradia','imovel'],
   ['🏡','casa','jardim','residencia'],
@@ -88,7 +88,7 @@ const EMOJI_DATA: [string, string, ...string[]][] = [
   ['🚢','navio','cruzeiro','viagem'],
   ['🚁','helicoptero','taxi aereo'],
   ['🛻','picape','carro','caminhonete'],
-  ['🚕','taxi','99','uber','corrida'],
+  ['🚕','taxi','uber','corrida'],
   ['🚲','bicicleta','bike','transporte'],
   ['🛴','patinete','mobilidade'],
   ['⚓','porto','navio','maritimo'],
@@ -103,11 +103,11 @@ const EMOJI_DATA: [string, string, ...string[]][] = [
   ['👓','oculos','otica','visao'],
   ['🩹','curativo','ferimento','primeiros socorros'],
   ['🧬','genetica','exame','laboratorio'],
-  ['❤️‍🩹','saude','bem estar','cuidado'],
   ['🏃','corrida','exercicio','esporte'],
-  ['🥗','dieta','alimentacao saudavel','nutricao'],
   ['🧴','farmacia','higiene','creme'],
   ['🩻','raio x','exame','diagnostico'],
+  ['❤️','saude','coracao','bem estar'],
+  ['😴','sono','descanso','bem estar'],
   // Educação
   ['📚','livros','estudo','educacao'],
   ['🎓','formatura','curso','faculdade'],
@@ -147,20 +147,19 @@ const EMOJI_DATA: [string, string, ...string[]][] = [
   ['🏊','natacao','piscina','esporte'],
   // Compras
   ['👕','roupa','vestuario','camisa'],
-  ['👟','tenis','calçado','sapato'],
+  ['👟','tenis','calcado','sapato'],
   ['👗','vestido','roupa','moda'],
   ['💄','maquiagem','beleza','cosmetico'],
   ['👜','bolsa','acessorio','moda'],
   ['💍','anel','joalheria','presente'],
   ['🕶️','oculos sol','acessorio','moda'],
   ['👒','chapeu','acessorio','moda'],
-  ['🧴','cosmetico','beleza','higiene'],
   ['🛍️','compras','sacola','shopping'],
   ['🧣','cachecol','acessorio','roupa'],
   ['⌚','relogio','acessorio','tempo'],
   ['👔','camisa social','roupa','trabalho'],
   ['🧥','casaco','roupa','frio'],
-  ['👠','salto','calçado','moda'],
+  ['👠','salto','calcado','moda'],
   ['💻','notebook','tecnologia','eletronico'],
   ['📱','celular','smartphone','eletronico'],
   ['🎧','fone','musica','eletronico'],
@@ -183,39 +182,37 @@ const EMOJI_DATA: [string, string, ...string[]][] = [
   ['👨‍👩‍👧','familia','casal','filho'],
   ['🐾','pet','animal','cachorro','gato'],
   ['🎁','presente','regalo','aniversario'],
-  ['🎂','aniversario','bolo','comemoração'],
+  ['🎂','aniversario','bolo','comemoracao'],
   ['👶','bebe','filho','crianca'],
   ['🐕','cachorro','pet','animal'],
   ['🐈','gato','pet','animal'],
   ['🌹','flor','presente','romantico'],
   ['💑','casal','namorados','amor'],
-  ['👵','idoso','mãe','pai','familia'],
+  ['👵','idoso','mae','pai','familia'],
   ['🍼','bebe','mamadeira','filho'],
   ['🧒','crianca','filho','escola'],
   // Trabalho / Profissional
   ['💼','trabalho','profissional','escritorio'],
-  ['🖊️','assinatura','contrato','trabalho'],
   ['📋','lista','tarefa','trabalho'],
   ['🗓️','agenda','calendario','compromisso'],
   ['📞','telefone','ligacao','contato'],
   ['🤝','parceria','negocio','acordo'],
-  ['👔','trabalho','profissional','formal'],
   ['🏢','empresa','trabalho','escritorio'],
-  ['💼','maleta','trabalho','negocio'],
   ['📌','fixo','importante','anotacao'],
+  ['🗂️','arquivo','pasta','organizacao'],
+  ['📊','relatorio','apresentacao','trabalho'],
+  ['🖋️','assinatura','contrato','trabalho'],
   // Outros / Genérico
   ['⭐','estrela','favorito','destaque'],
   ['🌟','destaque','especial','importante'],
   ['🔖','marcador','categoria','label'],
   ['🏷️','etiqueta','categoria','tag'],
   ['📂','pasta','arquivo','organizacao'],
-  ['🗃️','organizacao','arquivo','pasta'],
   ['❓','duvida','outros','sem categoria'],
-  ['🔀','diverso','variado','outros'],
-  ['📌','fixo','recorrente','mensal'],
   ['✅','concluido','pago','confirmado'],
   ['⚡','energia','rapido','urgente'],
   ['🌍','internacional','exterior','viagem'],
+  ['🎀','presente','laco','especial'],
 ];
 
 const PRESET_COLORS = [
@@ -225,26 +222,201 @@ const PRESET_COLORS = [
 ];
 
 const GROUPS = [
-  { label: '💰 Finanças',    range: [0, 14] },
-  { label: '🏠 Casa',        range: [15, 31] },
-  { label: '🍽️ Alimentação', range: [32, 51] },
-  { label: '🚗 Transporte',  range: [52, 67] },
-  { label: '🏥 Saúde',       range: [68, 81] },
-  { label: '📚 Educação',    range: [82, 96] },
-  { label: '🎉 Lazer',       range: [97, 116] },
-  { label: '🛍️ Compras',    range: [117, 136] },
-  { label: '📡 Serviços',    range: [137, 148] },
-  { label: '👨‍👩‍👧 Família',  range: [149, 160] },
-  { label: '💼 Trabalho',    range: [161, 171] },
-  { label: '🔖 Outros',      range: [172, 181] },
+  { label: '💰 Finanças',    range: [0,  14] },
+  { label: '🏠 Casa',        range: [15, 33] },
+  { label: '🍽️ Alimentação', range: [34, 53] },
+  { label: '🚗 Transporte',  range: [54, 69] },
+  { label: '🏥 Saúde',       range: [70, 84] },
+  { label: '📚 Educação',    range: [85, 99] },
+  { label: '🎉 Lazer',       range: [100,119] },
+  { label: '🛍️ Compras',    range: [120,138] },
+  { label: '📡 Serviços',    range: [139,150] },
+  { label: '👨‍👩‍👧 Família',  range: [151,162] },
+  { label: '💼 Trabalho',    range: [163,172] },
+  { label: '🔖 Outros',      range: [173,182] },
 ];
 
 type View = 'list' | 'add' | 'edit';
 
+// ─── Sub-components OUTSIDE main component (avoids React crash) ──────────────
+
+interface EmojiGridProps {
+  emojis: string[];
+  selectedIcon: string;
+  onSelect: (e: string) => void;
+}
+function EmojiGrid({ emojis, selectedIcon, onSelect }: EmojiGridProps) {
+  return (
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
+      {emojis.map((e, i) => (
+        <button
+          key={`${e}-${i}`}
+          type="button"
+          onClick={() => onSelect(e)}
+          style={{
+            width: 38, height: 38, fontSize: 22, borderRadius: 8,
+            border: 'none', cursor: 'pointer',
+            background: selectedIcon === e ? '#6366f122' : 'transparent',
+            outline: selectedIcon === e ? '2px solid #6366f1' : 'none',
+            transition: 'all 0.1s',
+          }}
+        >
+          {e}
+        </button>
+      ))}
+    </div>
+  );
+}
+
+interface EmojiPickerProps {
+  selectedIcon: string;
+  emojiSearch: string;
+  filteredEmojis: string[] | null;
+  onSearchChange: (val: string) => void;
+  onSelect: (e: string) => void;
+}
+function EmojiPicker({ selectedIcon, emojiSearch, filteredEmojis, onSearchChange, onSelect }: EmojiPickerProps) {
+  return (
+    <div style={{
+      border: '1px solid var(--border-glass)', borderRadius: 12,
+      background: 'var(--bg-secondary)', overflow: 'hidden', marginTop: 8,
+    }}>
+      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-glass)' }}>
+        <input
+          className="form-input"
+          placeholder="🔍 Buscar emoji (ex: casa, saúde, comida...)"
+          value={emojiSearch}
+          onChange={ev => onSearchChange(ev.target.value)}
+          style={{ marginBottom: 0, fontSize: 13 }}
+        />
+      </div>
+      <div style={{ maxHeight: 260, overflowY: 'auto', padding: '10px 12px' }}>
+        {filteredEmojis ? (
+          filteredEmojis.length === 0
+            ? <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 16, fontSize: 13 }}>Nenhum emoji encontrado</div>
+            : <EmojiGrid emojis={filteredEmojis} selectedIcon={selectedIcon} onSelect={onSelect} />
+        ) : (
+          GROUPS.map(g => (
+            <div key={g.label} style={{ marginBottom: 14 }}>
+              <div style={{
+                fontSize: 11, color: 'var(--text-muted)', fontWeight: 700,
+                textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6,
+              }}>{g.label}</div>
+              <EmojiGrid
+                emojis={EMOJI_DATA.slice(g.range[0], g.range[1] + 1).map(([e]) => e)}
+                selectedIcon={selectedIcon}
+                onSelect={onSelect}
+              />
+            </div>
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
+
+interface CategoryFormProps {
+  name: string;
+  icon: string;
+  color: string;
+  saving: boolean;
+  showPicker: boolean;
+  emojiSearch: string;
+  filteredEmojis: string[] | null;
+  onNameChange: (v: string) => void;
+  onIconSelect: (e: string) => void;
+  onColorChange: (c: string) => void;
+  onTogglePicker: () => void;
+  onSearchChange: (v: string) => void;
+  onCancel: () => void;
+  onSubmit: (e: React.FormEvent) => void;
+}
+function CategoryForm({
+  name, icon, color, saving, showPicker, emojiSearch, filteredEmojis,
+  onNameChange, onIconSelect, onColorChange, onTogglePicker, onSearchChange,
+  onCancel, onSubmit,
+}: CategoryFormProps) {
+  return (
+    <form onSubmit={onSubmit}>
+      <div className="form-group">
+        <label>Nome da Categoria</label>
+        <input
+          className="form-input"
+          value={name}
+          onChange={e => onNameChange(e.target.value)}
+          required
+          placeholder="Ex: Mercado, Saúde, Academia..."
+        />
+      </div>
+
+      <div className="form-group">
+        <label>Ícone</label>
+        <div
+          onClick={onTogglePicker}
+          style={{
+            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
+            background: `${color}18`, borderRadius: 10, border: `2px solid ${color}44`,
+            cursor: 'pointer', userSelect: 'none',
+          }}
+        >
+          <span style={{ fontSize: 30 }}>{icon}</span>
+          <div>
+            <div style={{ fontWeight: 600, fontSize: 14 }}>{name || 'Prévia da categoria'}</div>
+            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
+              {showPicker ? 'Clique para fechar' : 'Clique para escolher ícone'}
+            </div>
+          </div>
+          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
+            {showPicker ? '▲' : '▼'}
+          </span>
+        </div>
+        {showPicker && (
+          <EmojiPicker
+            selectedIcon={icon}
+            emojiSearch={emojiSearch}
+            filteredEmojis={filteredEmojis}
+            onSearchChange={onSearchChange}
+            onSelect={onIconSelect}
+          />
+        )}
+      </div>
+
+      <div className="form-group">
+        <label>Cor</label>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
+          {PRESET_COLORS.map(c => (
+            <button key={c} type="button" onClick={() => onColorChange(c)} style={{
+              width: 30, height: 30, borderRadius: 8, background: c, border: 'none', cursor: 'pointer',
+              outline: color === c ? '3px solid white' : 'none',
+              boxShadow: color === c ? `0 0 0 4px ${c}55` : 'none',
+              transform: color === c ? 'scale(1.2)' : 'scale(1)',
+              transition: 'all 0.15s',
+            }} />
+          ))}
+          <input
+            type="color"
+            value={color}
+            onChange={e => onColorChange(e.target.value)}
+            style={{ width: 30, height: 30, borderRadius: 8, border: 'none', cursor: 'pointer', padding: 2 }}
+          />
+        </div>
+      </div>
+
+      <div className="modal-actions">
+        <button type="button" className="btn-secondary" onClick={onCancel}>Cancelar</button>
+        <button type="submit" className="btn-primary" disabled={saving}>
+          {saving ? 'Salvando...' : '💾 Salvar'}
+        </button>
+      </div>
+    </form>
+  );
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
+
 export default function CategoryManagementModal({
   isOpen, onClose, categories, onAdd, onEdit, onDelete,
 }: CategoryManagementModalProps) {
-  // ── ALL HOOKS MUST BE BEFORE ANY CONDITIONAL RETURN ──
   const [view, setView] = useState<View>('list');
   const [selected, setSelected] = useState<Category | null>(null);
   const [name, setName] = useState('');
@@ -256,11 +428,11 @@ export default function CategoryManagementModal({
   const [showPicker, setShowPicker] = useState(false);
 
   const filteredEmojis = useMemo(() => {
-    if (!emojiSearch.trim()) return null; // show groups
+    if (!emojiSearch.trim()) return null;
     const q = emojiSearch.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
-    return EMOJI_DATA.filter(([, ...terms]) =>
-      terms.some(t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q))
-    ).map(([e]) => e);
+    return EMOJI_DATA
+      .filter(([, ...terms]) => terms.some(t => t.normalize('NFD').replace(/[\u0300-\u036f]/g, '').includes(q)))
+      .map(([e]) => e);
   }, [emojiSearch]);
 
   const filteredCategories = catSearch
@@ -299,112 +471,10 @@ export default function CategoryManagementModal({
     if (window.confirm(`Excluir a categoria "${c.name}"?`)) onDelete(c.id);
   };
 
-  const EmojiGrid = ({ emojis }: { emojis: string[] }) => (
-    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 2 }}>
-      {emojis.map((e, i) => (
-        <button key={`${e}-${i}`} type="button"
-          onClick={() => { setIcon(e); setShowPicker(false); }}
-          style={{
-            width: 38, height: 38, fontSize: 22, borderRadius: 8,
-            border: 'none', cursor: 'pointer', background: icon === e ? '#6366f122' : 'transparent',
-            outline: icon === e ? '2px solid #6366f1' : 'none',
-            transition: 'all 0.1s',
-          }}>
-          {e}
-        </button>
-      ))}
-    </div>
-  );
-
-  const EmojiPicker = () => (
-    <div style={{
-      border: '1px solid var(--border-glass)', borderRadius: 12,
-      background: 'var(--bg-secondary)', overflow: 'hidden', marginTop: 8,
-    }}>
-      <div style={{ padding: '8px 10px', borderBottom: '1px solid var(--border-glass)' }}>
-        <input
-          className="form-input"
-          placeholder="🔍 Buscar emoji (ex: casa, saúde, comida...)"
-          value={emojiSearch}
-          onChange={e => setEmojiSearch(e.target.value)}
-          style={{ marginBottom: 0, fontSize: 13 }}
-        />
-      </div>
-      <div style={{ maxHeight: 260, overflowY: 'auto', padding: '10px 12px' }}>
-        {filteredEmojis ? (
-          filteredEmojis.length === 0
-            ? <div style={{ color: 'var(--text-muted)', textAlign: 'center', padding: 16, fontSize: 13 }}>Nenhum emoji encontrado</div>
-            : <EmojiGrid emojis={filteredEmojis} />
-        ) : (
-          GROUPS.map(g => (
-            <div key={g.label} style={{ marginBottom: 14 }}>
-              <div style={{
-                fontSize: 11, color: 'var(--text-muted)', fontWeight: 700,
-                textTransform: 'uppercase', letterSpacing: 1, marginBottom: 6,
-              }}>{g.label}</div>
-              <EmojiGrid emojis={EMOJI_DATA.slice(g.range[0], g.range[1] + 1).map(([e]) => e)} />
-            </div>
-          ))
-        )}
-      </div>
-    </div>
-  );
-
-  const CategoryForm = ({ onSubmit }: { onSubmit: (e: React.FormEvent) => void }) => (
-    <form onSubmit={onSubmit}>
-      <div className="form-group">
-        <label>Nome da Categoria</label>
-        <input className="form-input" value={name} onChange={e => setName(e.target.value)} required placeholder="Ex: Mercado, Saúde, Academia..." />
-      </div>
-
-      <div className="form-group">
-        <label>Ícone</label>
-        <div
-          onClick={() => setShowPicker(p => !p)}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 12, padding: '12px 16px',
-            background: `${color}18`, borderRadius: 10, border: `2px solid ${color}44`,
-            cursor: 'pointer', userSelect: 'none',
-          }}>
-          <span style={{ fontSize: 30 }}>{icon}</span>
-          <div>
-            <div style={{ fontWeight: 600, fontSize: 14 }}>{name || 'Prévia da categoria'}</div>
-            <div style={{ fontSize: 12, color: 'var(--text-muted)' }}>
-              {showPicker ? 'Clique para fechar' : 'Clique para escolher ícone'}
-            </div>
-          </div>
-          <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--text-muted)' }}>
-            {showPicker ? '▲' : '▼'}
-          </span>
-        </div>
-        {showPicker && <EmojiPicker />}
-      </div>
-
-      <div className="form-group">
-        <label>Cor</label>
-        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginTop: 4 }}>
-          {PRESET_COLORS.map(c => (
-            <button key={c} type="button" onClick={() => setColor(c)} style={{
-              width: 30, height: 30, borderRadius: 8, background: c, border: 'none', cursor: 'pointer',
-              outline: color === c ? '3px solid white' : 'none',
-              boxShadow: color === c ? `0 0 0 4px ${c}55` : 'none',
-              transform: color === c ? 'scale(1.2)' : 'scale(1)',
-              transition: 'all 0.15s',
-            }} />
-          ))}
-          <input type="color" value={color} onChange={e => setColor(e.target.value)}
-            style={{ width: 30, height: 30, borderRadius: 8, border: 'none', cursor: 'pointer', padding: 2 }} />
-        </div>
-      </div>
-
-      <div className="modal-actions">
-        <button type="button" className="btn-secondary" onClick={() => setView('list')}>Cancelar</button>
-        <button type="submit" className="btn-primary" disabled={saving}>
-          {saving ? 'Salvando...' : '💾 Salvar'}
-        </button>
-      </div>
-    </form>
-  );
+  const handleIconSelect = (e: string) => {
+    setIcon(e);
+    setShowPicker(false);
+  };
 
   return (
     <div className="modal-overlay" onClick={onClose}>
@@ -423,8 +493,12 @@ export default function CategoryManagementModal({
         {view === 'list' && (
           <>
             <div style={{ marginBottom: 12 }}>
-              <input className="form-input" placeholder="🔍 Buscar categoria..."
-                value={catSearch} onChange={e => setCatSearch(e.target.value)} />
+              <input
+                className="form-input"
+                placeholder="🔍 Buscar categoria..."
+                value={catSearch}
+                onChange={e => setCatSearch(e.target.value)}
+              />
             </div>
 
             <div style={{ maxHeight: 380, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, marginBottom: 16 }}>
@@ -469,8 +543,24 @@ export default function CategoryManagementModal({
           </>
         )}
 
-        {view === 'add'  && <CategoryForm onSubmit={handleAdd} />}
-        {view === 'edit' && <CategoryForm onSubmit={handleEdit} />}
+        {(view === 'add' || view === 'edit') && (
+          <CategoryForm
+            name={name}
+            icon={icon}
+            color={color}
+            saving={saving}
+            showPicker={showPicker}
+            emojiSearch={emojiSearch}
+            filteredEmojis={filteredEmojis}
+            onNameChange={setName}
+            onIconSelect={handleIconSelect}
+            onColorChange={setColor}
+            onTogglePicker={() => setShowPicker(p => !p)}
+            onSearchChange={setEmojiSearch}
+            onCancel={() => setView('list')}
+            onSubmit={view === 'add' ? handleAdd : handleEdit}
+          />
+        )}
       </div>
     </div>
   );
